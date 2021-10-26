@@ -696,7 +696,10 @@ func (c *Client) Subscribe(ctx context.Context, channels ...string) *PubSub {
 func (c *Client) PSubscribe(ctx context.Context, channels ...string) *PubSub {
 	pubsub := c.pubSub()
 	if len(channels) > 0 {
-		_ = pubsub.PSubscribe(ctx, channels...)
+		err := pubsub.PSubscribe(ctx, channels...)
+		if err != nil {
+			internal.Logger.Printf(pubsub.getContext(), "redis: bad PubSub connection: %s", err)
+		}
 	}
 	return pubsub
 }
